@@ -39,7 +39,7 @@ function startGame(io) {
 		initiate();
 		distributeCards();
 		sendCards(io);
-		firstMove();
+		//firstMove();
 	}
 }
 
@@ -48,13 +48,16 @@ function initiate() {
 		playerOrder = Object.keys(players);
 		firstToGo = 0;
 	}
+	for (var playerid in players) {
+		players[playerid].ready = false;
+	}
 }
 
 function distributeCards() {
 	var numOfCards = Math.floor(168 / numOfPlayers);
 	var remainder = 168 % numOfPlayers;
 	for (var i = 0; i < 168 - remainder; i++) {
-		var index = Math.floor(Math.random() * 4);
+		var index = Math.floor(Math.random() * numOfPlayers);
 		var player = players[playerOrder[index]];
 		if (player.cards.length >= numOfCards) {
 			i--;
@@ -67,8 +70,20 @@ function distributeCards() {
 	}
 }
 
+function sendCards(io) {
+	for (var playerid in players) {
+		io.to(playerid).emit('cards', players[playerid].cards);
+	}
+}
+
 function getCardValue(value) {
-	return Math.floor(value / 4) + 6;
+	if (value < 160) {
+		return Math.floor(value / 16) + 6;
+	} else if (value < 164) {
+		return 16;
+	} else {
+		return 17;
+	}
 }
 
 function getCardName(value, realValue) {
@@ -93,10 +108,12 @@ function Player() {
 	this.guard = false;
 	var addCard = (value) => {
 		var card = new Card(value);
-		cards.push(card);
+		this.cards.push(card);
 		if (card.name == 'E') this.emperor = true;
 		if (card.name == 'G') this.guard = true;
 	};
+	this.addCard = addCard;
+	this.ready = false;
 }
 
 function Card(value) {
