@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/0019/baohuang/issues"
   },
-  "homepage": "https://github.com/0019/baohuang#readme"
+  "homepage": "https://github.com/0019/baohuang#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "socket.io": "^2.0.3"
+  }
 }
