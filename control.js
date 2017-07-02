@@ -3,7 +3,7 @@ var exports;
 var numOfPlayers = 0;
 var players = {};
 var playerOrder;
-var firstToGo;
+var firstToPick;
 
 exports.addPlayer = (id) => {
 	if (numOfPlayers == 5) {
@@ -12,7 +12,7 @@ exports.addPlayer = (id) => {
 	if (players[id] == null) {
 		players[id] = new Player();
 		numOfPlayers++;
-		console.log(players);
+		console.log(id);
 	}
 }
 
@@ -44,9 +44,9 @@ function startGame(io) {
 }
 
 function initiate() {
-	if (firstToGo == null) {
+	if (firstToPick == null) {
 		playerOrder = Object.keys(players);
-		firstToGo = 0;
+		firstToPick = 0;
 	}
 	for (var playerid in players) {
 		players[playerid].ready = false;
@@ -54,19 +54,12 @@ function initiate() {
 }
 
 function distributeCards() {
-	var numOfCards = Math.floor(168 / numOfPlayers);
-	var remainder = 168 % numOfPlayers;
-	for (var i = 0; i < 168 - remainder; i++) {
-		var index = Math.floor(Math.random() * numOfPlayers);
-		var player = players[playerOrder[index]];
-		if (player.cards.length >= numOfCards) {
-			i--;
-			continue;
-		}
-		player.addCard(i);
-	}
-	for (var i = 168 - remainder, j = firstToGo; i < 168; i++, j++) {
-		players[j % numOfPlayers].addCard(i);
+	var cards = [];
+	for (var i = 168, j = firstToPick; i > 0; i--, j++) {
+		var rad = Math.floor(Math.random() * i);
+		var card = cards[rad] == undefined ? rad : cards[rad];
+		players[playerOrder[j % numOfPlayers]].addCard(card);
+		cards[rad] = cards[i - 1] ? cards[i - 1] : i - 1;
 	}
 }
 
@@ -96,21 +89,21 @@ function getCardName(value, realValue) {
 			case 13: return 'K';
 			case 14: return 'A';
 			case 15: return '2';
-			case 16: if (value == 163) return 'G'; else return 'B'; // Guard, Black Joker
-			case 17: if (value == 167) return 'E'; else return 'R'; // Emperor, Red Joker
+			case 16: if (value == 163) return '保'; else return '小王'; // Guard, Black Joker
+			case 17: if (value == 167) return '皇'; else return '大王'; // Emperor, Red Joker
 		}
 	}
 }
 
 function Player() {
-	this.cards = [];
+	this.cards = {};
 	this.emperor = false;
 	this.guard = false;
 	var addCard = (value) => {
 		var card = new Card(value);
-		this.cards.push(card);
-		if (card.name == 'E') this.emperor = true;
-		if (card.name == 'G') this.guard = true;
+		if (card.name == '皇') this.emperor = true;
+		if (card.name == '保') this.guard = true;
+		this.cards[card.name] = this.cards[card.name] ? this.cards[card.name] + 1 : 1;
 	};
 	this.addCard = addCard;
 	this.ready = false;
