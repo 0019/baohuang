@@ -17,7 +17,7 @@ io.on('connection', function(socket) {
 	control.addPlayer(socket.id);
 	socket.on('disconnect', function() {
 		control.deletePlayer(socket.id);
-	);
+	});
 	socket.on('control', function(msg) {
 		console.log(socket.id + ' ' + msg);
 	});
