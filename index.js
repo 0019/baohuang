@@ -19,7 +19,7 @@ io.on('connection', function(socket) {
 		control.deletePlayer(socket.id);
 	});
 	socket.on('control', function(msg) {
-		console.log(socket.id + ' ' + msg);
+		control.control(io, socket, msg);
 	});
 });
 
