@@ -1,0 +1,79 @@
+body {
+	background-color: #1E90FF;
+	background-image: url('/public/res/bg.png');
+	min-width: 960px;
+	width: 100%;
+	margin: 0 auto;
+}
+
+div {
+	border: 0.5px red solid;
+}
+
+#title {
+	height: 15vh;
+}
+
+#title img {
+	text-align: center;
+	width: 100%;
+	height: 100%;
+}
+
+#game {
+	width: 100%;
+	height: 85vh;
+}
+
+#field {
+	width: 100%;
+	height: 50vh;
+	display: table;
+}
+
+#left, #right {
+	width: 30vw;
+	height: 100%;
+	display: table-cell;
+}
+
+#middle {
+	height: 100%;
+	display: table-cell;
+}
+
+.player {
+	width: 100%;
+	height: 25vh;
+	display: table;
+}
+
+.playername, .playercard {
+	display: table-cell;
+	width: 50%;
+	height: 100%;
+	text-align: center;
+}
+
+.playerready {
+	font-size: 24;
+	visibility: hidden;
+}
+
+#console {
+	text-align: center;
+	width: 100%;
+	height: 35vh;
+}
+
+#ready {
+	position: relative;
+	top: 20%;
+	font-size: 30px;
+	border: none;
+	border-radius: 5px;
+}
+
+#ready:hover {
+	cursor: pointer;
+}

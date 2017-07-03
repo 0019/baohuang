@@ -8,17 +8,39 @@
 </head>
 
 <body>
-	<div id="title"></div>
+	<div id="title">
+		<img src="/public/res/bh.svg"/>
+	</div>
 	<div id="game">
-		<div>
-			<div>
-				<div id="p1"></div>
-				<div id="p2"></div>
+		<div id="field">
+			<div id="left">
+				<div id="p0" class="player">
+					<div class="playername"></div>
+					<div class="playercard">
+						<button class="playerready">Ready!</button>
+					</div>
+				</div>
+				<div id="p1" class="player">
+					<div class="playername"></div>
+					<div class="playercard">
+						<button class="playerready">Ready!</button>
+					</div>
+				</div>
 			</div>
-			<div id="playground"></div>
-			<div>
-				<div id="p3"></div>
-				<div id="p4"></div>
+			<div id="middle"></div>
+			<div id="right">
+				<div id="p2" class="player">
+					<div class="playercard">
+						<button class="playerready">Ready!</button>
+					</div>
+					<div class="playername"></div>
+				</div>
+				<div id="p3" class="player">
+					<div class="playercard">
+						<button class="playerready">Ready!</button>
+					</div>
+					<div class="playername"></div>
+				</div>
 			</div>
 		</div>
 		<div id="console">

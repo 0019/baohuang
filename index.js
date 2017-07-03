@@ -14,9 +14,9 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket) {
-	control.addPlayer(socket.id);
+	control.addPlayer(io, socket);
 	socket.on('disconnect', function() {
-		control.deletePlayer(socket.id);
+		control.deletePlayer(io, socket);
 	});
 	socket.on('control', function(msg) {
 		control.control(io, socket, msg);

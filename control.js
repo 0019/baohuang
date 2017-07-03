@@ -5,27 +5,46 @@ var players = {};
 var playerOrder;
 var firstToPick;
 
-exports.addPlayer = (id) => {
+exports.addPlayer = (io, socket) => {
 	if (numOfPlayers == 5) {
 		return;
 	}
-	if (players[id] == null) {
-		players[id] = new Player();
+	if (players[socket.id] == null) {
+		players[socket.id] = new Player();
 		numOfPlayers++;
-		console.log(id);
+		console.log(socket.id);
+	}
+	syncPlayersinfo(io);
+}
+
+function syncPlayersinfo(io) {
+	for (var player in players) {
+		io.to(player).emit('playersinfo', getPlayersinfo(player));
 	}
 }
 
-exports.deletePlayer = (id) => {
-	if (players[id] != null) {
-		delete players[id];
+function getPlayersinfo(id) {
+	var data = [];
+	for (var player in players) {
+		if (player != id) {
+			data.push(players[player]);
+		}
+	}
+	return data;
+}
+
+exports.deletePlayer = (io, socket) => {
+	if (players[socket.id] != null) {
+		delete players[socket.id];
 		numOfPlayers--;
 	}
+	syncPlayersinfo(io);
 }
 
 exports.control = (io, socket, msg) => {
 	if (msg == 'ready') {
 		players[socket.id].ready = true;
+		syncPlayersinfo(io);
 		startGame(io);
 	}
 }
@@ -97,8 +116,8 @@ function getCardName(value, realValue) {
 
 function Player() {
 	this.cards = {};
-	this.emperor = false;
-	this.guard = false;
+	//this.emperor = false;
+	//this.guard = false;
 	var addCard = (value) => {
 		var card = new Card(value);
 		if (card.name == '皇') this.emperor = true;
