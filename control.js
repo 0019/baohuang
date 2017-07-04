@@ -149,6 +149,7 @@ function Player() {
 }
 
 function Card(value) {
+	this.identifier = value;
 	this.value = getCardValue(value);
 	this.name = getCardName(value, this.value);
 }

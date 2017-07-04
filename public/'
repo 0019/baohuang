@@ -46,11 +46,7 @@ function displayCards(cards) {
 	var str = '', card;
 	for (var index in cards) {
 		card = cards[index];
-		if (card.identifier < 160) {
-			str += "<img class='card' src='/public/res/cardsJS/cards/" + card.name + ".svg'>";
-		} else {
-			str += "<img class='card' src='/public/res/cardsJS/cards/" + card.name + ".png'>";
-		}
+		str += "<img class='card' src='/public/res/cardsJS/cards/" + card.name + ".svg' onerror='this.onerror=null;this.src=\'/public/res/cardsJS/cards/" + card.name + ".png\';'";
 	}
 	$('#mycards').html(str);
 }
