@@ -42,10 +42,16 @@ exports.deletePlayer = (io, socket) => {
 }
 
 exports.control = (io, socket, msg) => {
-	if (msg == 'ready') {
-		players[socket.id].ready = true;
-		syncPlayersinfo(io);
-		startGame(io);
+	switch (msg) {
+		case 'ready':
+			players[socket.id].ready = true;
+			syncPlayersinfo(io);
+			startGame(io);
+			return;
+		case 'notready':
+			players[socket.id].ready = false;
+			syncPlayersinfo(io);
+			return;
 	}
 }
 
@@ -84,7 +90,7 @@ function distributeCards() {
 
 function sendCards(io) {
 	for (var playerid in players) {
-		io.to(playerid).emit('cards', players[playerid].cards);
+		io.to(playerid).emit('cards', JSON.stringify(players[playerid].cards));
 	}
 }
 
@@ -99,30 +105,44 @@ function getCardValue(value) {
 }
 
 function getCardName(value, realValue) {
+	var shape = '', name = '';
+	if (value < 160) {
+		switch (value % 4) {
+			case 0: shape = 'D'; break;
+			case 1: shape = 'C'; break;
+			case 2: shape = 'H'; break;
+			case 3: shape = 'S'; break;
+		}
+	} else if (value == 163) {
+		shape = 'G';
+	} else if (value == 167) {
+		shape = 'E';
+	}
 	if (realValue < 11) {
-		return realValue;
+		name = realValue.toString();
 	} else {
 		switch (realValue) {
-			case 11: return 'J';
-			case 12: return 'Q';
-			case 13: return 'K';
-			case 14: return 'A';
-			case 15: return '2';
-			case 16: if (value == 163) return '保'; else return '小王'; // Guard, Black Joker
-			case 17: if (value == 167) return '皇'; else return '大王'; // Emperor, Red Joker
+			case 11: name = 'J'; break;
+			case 12: name = 'Q'; break;
+			case 13: name = 'K'; break;
+			case 14: name = 'A'; break;
+			case 15: name = '2'; break;
+			case 16: name = 'B'; break;
+			case 17: name = 'R'; break;
 		}
 	}
+	return name + shape;
 }
 
 function Player() {
-	this.cards = {};
+	this.cards = [];
 	//this.emperor = false;
 	//this.guard = false;
 	var addCard = (value) => {
 		var card = new Card(value);
-		if (card.name == '皇') this.emperor = true;
-		if (card.name == '保') this.guard = true;
-		this.cards[card.name] = this.cards[card.name] ? this.cards[card.name] + 1 : 1;
+		if (card.name == 'RE') this.emperor = true;
+		if (card.name == 'BG') this.guard = true;
+		this.cards.push(card);
 	};
 	this.addCard = addCard;
 	this.ready = false;
