@@ -18,17 +18,19 @@ socket.on('cards', function(cards) {
 });
 
 function displayPlayers() {
-//	$('.playerready').hide();
-	for (var i = 0; i < players.length; i++) {
-//		$('#p' + i + ' .playerready').show();
+	var i = 0;
+	for (i; i < players.length; i++) {
+		$('#p' + i + ' .playername').css('background-color', 'white');
 		console.log(players);
 		console.log(players[i].ready);
 		if (players[i].ready == true) {
-			$('#p' + i + ' .playerready').css('background-color', 'green');
-			$('#p' + i + ' .playerready').css('color', 'yellow');
+			$('#p' + i + ' .playercard').css('background-color', 'black');
 		} else {
-			$('#p' + i + ' .playerready').css('background-color', '');
-			$('#p' + i + ' .playerready').css('color', '');
+			$('#p' + i + ' .playercard').css('background-color', '');
 		}
+	}
+	for (i; i < 4; i++) {
+		$('#p' + i + ' .playername').css('background-color', '');
+		$('#p' + i + ' .playercard').css('background-color', '');
 	}
 }
