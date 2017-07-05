@@ -4,6 +4,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
 var control = require('./control');
+var game = require('./game');
 
 var __dirname = '/Users/Qin_ShiHuang/baohuang';
 
@@ -20,6 +21,9 @@ io.on('connection', function(socket) {
 	});
 	socket.on('control', function(msg) {
 		control.control(io, socket, msg);
+	});
+	socket.on('game', function(msg) {
+		game.game(io, socket, msg);
 	});
 });
 

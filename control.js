@@ -1,3 +1,4 @@
+var game = require('./game');
 var exports;
 
 var numOfPlayers = 0;
@@ -80,11 +81,16 @@ function initiate() {
 
 function distributeCards() {
 	var cards = [];
+	var rad, card, index;
 	for (var i = 168, j = firstToPick; i > 0; i--, j++) {
-		var rad = Math.floor(Math.random() * i);
-		var card = cards[rad] == undefined ? rad : cards[rad];
-		players[playerOrder[j % numOfPlayers]].addCard(card);
+		rad = Math.floor(Math.random() * i);
+		card = cards[rad] == undefined ? rad : cards[rad];
+		index = j % numOfPlayers;
+		players[playerOrder[index]].addCard(card);
 		cards[rad] = cards[i - 1] ? cards[i - 1] : i - 1;
+		if (card == 167) {
+			game.playerToGo = index;
+		}
 	}
 }
 
