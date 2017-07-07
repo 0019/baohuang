@@ -142,6 +142,7 @@ function getCardName(value, realValue) {
 
 function Player() {
 	this.cards = [];
+	this.cardsConcise = {};
 	//this.emperor = false;
 	//this.guard = false;
 	var addCard = (value) => {
@@ -149,6 +150,11 @@ function Player() {
 		if (card.name == 'RE') this.emperor = true;
 		if (card.name == 'BG') this.guard = true;
 		this.cards.push(card);
+		if (this.cardsConcise[card.value] != undefined) {
+			this.cardsConcise[card.value] = this.cardsConcise[card.value] + 1;
+		} else {
+			this.cardsConcise[card.value] = 1;
+		}
 	};
 	this.addCard = addCard;
 	this.ready = false;
