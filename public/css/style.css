@@ -76,3 +76,8 @@ div {
 #ready:hover {
 	cursor: pointer;
 }
+
+img.card.chosen {
+	padding-top: 0px;
+	padding-bottom: 10px;
+}

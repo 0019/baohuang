@@ -67,7 +67,7 @@ function isGreaterThanLastHand(hand) {
 }
 
 function hand(cards) {
-	var r = 0, b = 0;
+	var r = 0, b = 0, v = null;
 	for (var index in cards) {
 		if (cards[index] < 16) {
 			v = cards[index];
