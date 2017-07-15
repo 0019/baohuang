@@ -65,12 +65,16 @@ div {
 	height: 35vh;
 }
 
-#ready {
+#ready, #play, #pass {
 	position: relative;
 	top: 20%;
 	font-size: 30px;
 	border: none;
 	border-radius: 5px;
+}
+
+#play, #pass {
+	display: none;
 }
 
 #ready:hover {

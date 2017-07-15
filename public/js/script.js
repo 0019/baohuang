@@ -3,6 +3,7 @@ var players = [];
 var started = false;
 var ready = false;
 var mycards = [];
+var myturn = false;
 
 var activeHand = new Hand([]);
 
@@ -61,6 +62,16 @@ $(document).on('click', 'img.card', function() {
 	console.log(activeHand);
 });
 
+$('#play').click(function() {
+	var str = JSON.stringify(activeHand);
+	console.log(str);
+	socket.emit('game', str);
+});
+
+$('#pass').click(function() {
+	socket.emit('game', 'pass');
+});
+
 $('#ready').click(function() {
 	if (!ready) {
 		$(this).css('background-color', 'green');
@@ -79,10 +90,32 @@ socket.on('playersinfo', function(data) {
 	displayPlayers();
 });
 
+socket.on('yourturn', function() {
+	startTurn();
+});
+
 socket.on('cards', function(cards) {
 	console.log(cards);
 	displayCards(JSON.parse(cards));
 });
+
+socket.on('play', function(cards) {
+	if (myturn) {
+		endTurn();
+	} else {
+
+	}
+});
+
+function startTurn() {
+
+	myturn = true;
+}
+
+function endTurn() {
+
+	myturn = false;
+}
 
 function displayPlayers() {
 	var i = 0;
@@ -100,6 +133,8 @@ function displayPlayers() {
 
 function displayCards(cards) {
 	$('#ready').hide();
+	document.getElementById('pass').style.display = '';
+	document.getElementById('play').style.display = '';
 	cards.sort(function(a, b) {
 		return b.identifier - a.identifier;
 	});

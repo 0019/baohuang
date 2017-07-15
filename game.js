@@ -1,6 +1,6 @@
 var control = require('./control');
 var playerToGo;
-var lastHand;
+var lastHand = {};
 
 function game(io, socket, msg) {
 	if (socket.id != control.playerOrder[playerToGo]) {
@@ -8,17 +8,18 @@ function game(io, socket, msg) {
 		return;
 	} 
 	if (msg == 'pass') {
-		nextPlayer();
+		nextPlayer(io, null);
 	} else if (msg == 'gone') {
 	} else if (isValidHand(msg) && isViableHand(msg, socket.id) && isGreaterThanLastHand(msg)) {
 		processTurn(msg, socket.id);
-		socket.broadcast.emit('play', JSON.stringify(msg));
+		io.emit('play', msg);
 	} else {
 		socket.emit('invalid');
 	}
 }
 
-function processTurn(hand, id) {
+function processTurn(playerHand, id) {
+	var hand = JSON.parse(playerHand);
 	var cards = control.players[id].cardsConcise;
 	cards[17] -= hand.r;
 	cards[16] -= hand.b;
@@ -26,9 +27,22 @@ function processTurn(hand, id) {
 	nextPlayer(hand);
 }
 
-function nextPlayer(hand) {
-	lastHand = hand;
+function nextPlayer(io, hand) {
+	if (hand != null) {
+		lastHand.hand = hand;
+		lasthand.player = playerToGo;
+	}
 	playerToGo = (playerToGo + 1) % control.numOfPlayers;
+	if (lastHand.player == playerToGo) {
+		newTurn();
+	} else {
+		io.to(control.playerOrder[playerToGo]).emit('yourturn');
+	}
+}
+
+function newTurn() {
+	lastHand = {};
+	io.to(control.playerOrder[playerToGo]).emit('yourturn');
 }
 
 function isValidHand(hand) {
@@ -56,14 +70,14 @@ function playerOnlyHasSix(id) {
 }
 
 function isGreaterThanLastHand(hand) {
-	if (lastHand == null) return true;
-	if (hand.length != lastHand.length) return false;
-	if (lastHand.r > 0) return false;
+	if (lastHand.hand == null) return true;
+	if (hand.length != lastHand.hand.length) return false;
+	if (lastHand.hand.r > 0) return false;
 	if (hand.v != null) {
-		if (lastHand.v == null || lastHand.v >= hand.v) return false;
+		if (lastHand.hand.v == null || lastHand.hand.v >= hand.v) return false;
 	}
-	if (hand.r >= lastHand.b) return true;
-	if (hand.b > 0 && lastHand.b == 0) return true;
+	if (hand.r >= lastHand.hand.b) return true;
+	if (hand.b > 0 && lastHand.hand.b == 0) return true;
 }
 
 function hand(cards) {

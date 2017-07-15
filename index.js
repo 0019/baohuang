@@ -3,10 +3,11 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+var port = 3000;
 var control = require('./control');
 var game = require('./game');
 
-var __dirname = '/Users/Qin_ShiHuang/baohuang';
+var __dirname = '/Users/zilin/baohuang';
 
 app.use('/public', express.static(__dirname + '/public'));
 
@@ -27,7 +28,7 @@ io.on('connection', function(socket) {
 	});
 });
 
-server.listen(3000, function(){
-	console.log('alive: 3000');
+server.listen(port, function(){
+	console.log('alive: ' + port);
 });
 
